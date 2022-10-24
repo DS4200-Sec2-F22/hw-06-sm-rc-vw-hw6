@@ -1,0 +1,27 @@
+body {
+  font-family: Arial;
+}
+
+.centered_header {
+  text-align: center;
+}
+
+.three_cols {
+  padding: 30px;
+  display: flex;
+}
+
+.left_col {
+  width: 33.33%;
+  float: left;
+}
+
+.middle_col {
+  width: 33.33%;
+  float: middle;
+}
+
+.right_col {
+  width: 33.33%;
+  float: right;
+}
