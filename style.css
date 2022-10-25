@@ -24,3 +24,10 @@ body {
   width: 33.33%;
   float: right;
 }
+
+
+.selected {
+  opacity: 1 !important;
+  stroke: black;
+  stroke-width: 1px;
+}
