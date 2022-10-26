@@ -26,8 +26,24 @@ body {
 }
 
 
-.selectedxw {
-  opacity: 1 !important;
+.selected {
   stroke: black;
-  stroke-width: 1px;
+  stroke-width: 2px;
+  opacity: 100% !important;
+}
+
+
+.setosa {
+	fill: #1a64db;
+	opacity: 50%;
+}
+
+.versicolor {
+	fill: #50ad5b;
+	opacity: 50%;
+}
+
+.virginica {
+	fill: #cf3c3e;
+	opacity: 50%;
 }

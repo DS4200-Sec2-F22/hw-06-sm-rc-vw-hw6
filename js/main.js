@@ -60,7 +60,7 @@ d3.csv("data/iris.csv").then( function(data) {
 		// add brushing feature
     	.call( d3.brush()
 		// initialize brush area
-      	.extent( [ [0,0], [VIS_WIDTH,VIS_HEIGHT] ] )
+      	.extent( [ [0,0], [VIS_WIDTH, VIS_HEIGHT - 100] ] )
 		// when brush area selection changes, trigger updateChart function below
       	.on("start brush", updateChart)
     )
@@ -133,7 +133,7 @@ d3.csv("data/iris.csv").then( function(data) {
         // add brushing feature
         .call( d3.brush()
         // initialize brush area
-        .extent( [ [0,0], [VIS_WIDTH,VIS_HEIGHT] ] )
+        .extent( [ [0,0], [VIS_WIDTH, VIS_HEIGHT-100] ] )
         // when brush area selection changes, trigger updateChart function below
         .on("start brush", updateChart)
     )
@@ -202,12 +202,12 @@ d3.csv("data/iris.csv").then( function(data) {
                     // x pos depends on category 
                     return (xScale(d.Species) + MARGINS.left); 
                 })
-                .attr("y", yScale(50) + MARGINS.top - 100)
-                .attr("height", VIS_HEIGHT - yScale(50))
-                .attr("width", xScale.bandwidth()) 
-                .style("fill", function (d) { return color(d.Species) } )
-                .style("opacity", 0.5)
-                .attr('class', 'bar');
+            .attr("y", yScale(50) + MARGINS.top - 100)
+            .attr("height", VIS_HEIGHT - yScale(50))
+            .attr("width", xScale.bandwidth())
+            .style("fill", function (d) { return color(d.Species) } )
+            .style("opacity", 0.5)
+            .attr("class", (d) => {return d.Species});
                 
 
     // Add brushing
@@ -215,7 +215,7 @@ d3.csv("data/iris.csv").then( function(data) {
         // add brushing feature
         .call( d3.brush()
         // initialize brush area
-        .extent( [ [0,0], [VIS_WIDTH,VIS_HEIGHT] ] )
+        .extent( [ [60,50], [VIS_WIDTH + 60, VIS_HEIGHT - 50] ] )
         // when brush area selection changes, trigger updateChart function below
         .on("start brush", updateChart)
     )
