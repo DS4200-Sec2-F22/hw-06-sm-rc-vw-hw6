@@ -5,7 +5,8 @@ const MARGINS = {left: 60, right: 60, top: 50, bottom: 50};
 
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right;
-
+let myCircle;
+let myBar;
 // make frame for Petal_Length vs Sepal_Length scatterplot
 const FRAME1 =
     d3.select('#leftScatter')
@@ -39,7 +40,7 @@ d3.csv("data/iris.csv").then( function(data) {
         .range(["#1a64db", "#50ad5b", "#cf3c3e"])
 
     // add points to scatter plot
-    const myCircle = FRAME1.append('g')
+    myCircle = FRAME1.append('g')
     	.selectAll("dot")
     	.data(data)
         // .data(data.map(function(d) { return +d; }))
@@ -52,37 +53,77 @@ d3.csv("data/iris.csv").then( function(data) {
 		.style("opacity", 0.5)
       	.attr('class', 'datapoint');
 
-
-
-
-	// Add brushing
-  	FRAME1
-		// add brushing feature
-    	.call( d3.brush()
-		// initialize brush area
-      	.extent( [ [0,0], [VIS_WIDTH, VIS_HEIGHT - 100] ] )
-		// when brush area selection changes, trigger updateChart function below
-      	.on("start brush", updateChart)
-    )
-
-	// function is triggered when brush area is updated
-	function updateChart() {
-	  	extent = d3.event.selection;
-	  	myCircle.classed("selected", function(d){ return isBrushed(extent, xScale(d.Sepal_Length), yScale(d.Petal_Length) ) } )
-    }
-
-  	// true or false, depending on selection pointsxw
-  	function isBrushed(brush_coords, cx, cy) {
-       const x0 = brush_coords[0][0],
-           x1 = brush_coords[1][0],
-           y0 = brush_coords[0][1],
-           y1 = brush_coords[1][1];
-      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-  	}
-
 })
 
+
 // make frame for Petal_Width vs Sepal_Width scatterplot
+const FRAME3 =
+    d3.select('#rightGraph')
+        .append('svg')
+            .attr('height', FRAME_HEIGHT)
+            .attr('width', FRAME_WIDTH)
+            .attr('class', 'frame');
+
+const HARD_DATA = [{Species: "virginica", Count:50}, {Species: "versicolor", Count:50}, {Species: "setosa", Count:50}];
+// read in the data
+d3.csv("data/iris.csv").then( function(data) {
+// creating x scale
+    const xScale = d3.scaleBand() // for categorical data
+        .range([0, VIS_WIDTH])
+        .domain(data.map(d => d.Species))
+        .padding(0.2);
+
+    // creating Y scale 
+    const yScale = d3.scaleLinear()
+        .domain([0, 60])
+        .range([VIS_HEIGHT, 100]);
+    // Adding x axis
+    FRAME3.append("g")
+        .attr("transform", "translate(" + MARGINS.left +
+            "," + (VIS_HEIGHT + MARGINS.top - 100) + ")")
+        .call(d3.axisBottom(xScale));
+
+
+    // Adding Y axis 
+    FRAME3.append("g")
+        .attr("transform", "translate(" + MARGINS.left +
+            "," + (MARGINS.top - 100) + ")")
+        .call(d3.axisLeft(yScale));
+
+    // set specific color for each species
+    const color = d3.scaleOrdinal()
+        .domain(["setosa", "versicolor", "virginica"])
+        .range(["#1a64db", "#50ad5b", "#cf3c3e"])
+
+
+    // Add bars
+    myBar = FRAME3.selectAll("bars")
+        .data(HARD_DATA)
+        .enter()
+        .append("rect")
+        .attr("x", (d) => {
+            // x pos depends on category
+            return (xScale(d.Species) + MARGINS.left);
+        })
+        .attr("y", yScale(50) + MARGINS.top - 100)
+        .attr("height", VIS_HEIGHT - yScale(50))
+        .attr("width", xScale.bandwidth())
+        .style("fill", function (d) {
+            return color(d.Species)
+        })
+        .style("opacity", 0.5)
+        .attr("class", (d) => {
+            return d.Species
+        });
+})
+
+     // function is triggered when brush area is updated
+    function updateChart(event) {
+        extent = event.selection;
+        myCircle2.classed("selected", function(d){ return isBrushed(extent, xScale(d.Sepal_Width), yScale(d.Petal_Width) ) } )
+    }
+
+    // make frame for Petal_Width vs Sepal_Width scatterplot
 const FRAME2 =
     d3.select('#centerScatter')
         .append('svg')
@@ -115,7 +156,7 @@ d3.csv("data/iris.csv").then( function(data) {
         .range(["#1a64db", "#50ad5b", "#cf3c3e"])
 
     // add points to scatter plot
-    const myCircle = FRAME2.append('g')
+    const myCircle2 = FRAME2.append('g')
         .selectAll("dot")
         .data(data)
         // .data(data.map(function(d) { return +d; }))
@@ -139,12 +180,33 @@ d3.csv("data/iris.csv").then( function(data) {
     )
 
     // function is triggered when brush area is updated
-    function updateChart() {
-        extent = d3.event.selection;
-        myCircle.classed("selected", function(d){ return isBrushed(extent, xScale(d.Sepal_Width), yScale(d.Petal_Width) ) } )
+    function updateChart(event) {
+        const extent = event.selection;
+        myCircle2.classed("selected", function(d){
+            return isBrushed(extent, xScale(d.Sepal_Width), yScale(d.Petal_Width) ) } )
+
+        // make set of selected species to update bars
+        let speciesSelected = new Set();
+        // resets selected points when now selected
+        if (extent === null) {
+            myCircle.classed('selected', false);
+            myBar.classed('selected', false);
+        }
+        else {
+            isSelected = isBrushed(extent, (d) => {
+                xScale(d.Sepal_Width) , yScale(d.Petal_Width)});
+            if (isSelected) {
+                speciesSelected.add(d.Species);
+            }
+            return isSelected};
+
+        myBar.classed("selected", (d) => {return speciesSelected.has(d.Species);})
+
+
+
     }
 
-    // true or false, depending on selection pointsxw
+    // true or false, depending on selection points
     function isBrushed(brush_coords, cx, cy) {
        const x0 = brush_coords[0][0],
            x1 = brush_coords[1][0],
@@ -153,86 +215,4 @@ d3.csv("data/iris.csv").then( function(data) {
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
 
-})
-
-// make frame for Petal_Width vs Sepal_Width scatterplot
-const FRAME3 =
-    d3.select('#rightGraph')
-        .append('svg')
-            .attr('height', FRAME_HEIGHT)
-            .attr('width', FRAME_WIDTH)
-            .attr('class', 'frame');
-
-// read in the data
-d3.csv("data/iris.csv").then( function(data) {
-// creating x scale 
-    const xScale = d3.scaleBand() // for categorical data 
-                        .range([0, VIS_WIDTH])
-                        .domain(data.map(d => d.Species))
-                        .padding(0.2); 
-
-    // creating Y scale 
-    const yScale = d3.scaleLinear()
-                        .domain([0, 60])
-                        .range([VIS_HEIGHT, 100]); 
-    // Adding x axis
-    FRAME3.append("g")
-            .attr("transform", "translate(" + MARGINS.left +
-                "," + (VIS_HEIGHT + MARGINS.top - 100) + ")")
-            .call(d3.axisBottom(xScale));  
-
-
-    // Adding Y axis 
-    FRAME3.append("g")
-            .attr("transform", "translate(" + MARGINS.left +
-                "," + (MARGINS.top - 100) + ")")
-            .call(d3.axisLeft(yScale));  
-
-    // set specific color for each species
-    const color = d3.scaleOrdinal()
-        .domain(["setosa", "versicolor", "virginica"])
-        .range(["#1a64db", "#50ad5b", "#cf3c3e"])
-
-    // Add bars 
-    FRAME3.selectAll("bars")
-            .data(data)
-            .enter()
-            .append("rect")
-                .attr("x", (d) => {
-                    // x pos depends on category 
-                    return (xScale(d.Species) + MARGINS.left); 
-                })
-            .attr("y", yScale(50) + MARGINS.top - 100)
-            .attr("height", VIS_HEIGHT - yScale(50))
-            .attr("width", xScale.bandwidth())
-            .style("fill", function (d) { return color(d.Species) } )
-            .style("opacity", 0.5)
-            .attr("class", (d) => {return d.Species});
-                
-
-    // Add brushing
-    FRAME3
-        // add brushing feature
-        .call( d3.brush()
-        // initialize brush area
-        .extent( [ [60,50], [VIS_WIDTH + 60, VIS_HEIGHT - 50] ] )
-        // when brush area selection changes, trigger updateChart function below
-        .on("start brush", updateChart)
-    )
-
-    // function is triggered when brush area is updated
-    function updateChart() {
-        extent = d3.event.selection;
-        myCircle.classed("selected", function(d){ return isBrushed(extent, xScale(d.Sepal_Width), yScale(d.Petal_Width) ) } )
-    }
-
-    // true or false, depending on selection pointsxw
-    function isBrushed(brush_coords, cx, cy) {
-       const x0 = brush_coords[0][0],
-           x1 = brush_coords[1][0],
-           y0 = brush_coords[0][1],
-           y1 = brush_coords[1][1];
-      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-    }
-
-})
+});

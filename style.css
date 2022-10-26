@@ -28,22 +28,12 @@ body {
 
 .selected {
   stroke: black;
-  stroke-width: 2px;
+  stroke-width: 1px;
   opacity: 100% !important;
 }
 
 
-.setosa {
-	fill: #1a64db;
+.bar {
 	opacity: 50%;
 }
 
-.versicolor {
-	fill: #50ad5b;
-	opacity: 50%;
-}
-
-.virginica {
-	fill: #cf3c3e;
-	opacity: 50%;
-}
