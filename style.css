@@ -25,15 +25,23 @@ body {
   float: right;
 }
 
+.setosa {
+	fill: #1a64db;
+	opacity: 50%;
+}
+
+.versicolor {
+	fill: #50ad5b;
+	opacity: 50%;
+}
+
+.virginica {
+	fill: #cf3c3e;
+	opacity: 50%;
+}
 
 .selected {
   stroke: black;
   stroke-width: 1px;
   opacity: 100% !important;
 }
-
-
-.bar {
-	opacity: 50%;
-}
-
