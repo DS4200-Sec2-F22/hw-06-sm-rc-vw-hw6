@@ -41,7 +41,8 @@ body {
 }
 
 .selected {
-  stroke: black;
-  stroke-width: 1px;
-  opacity: 100% !important;
+    stroke: orange;
+    stroke-width: 2px;
+    opacity: 100% !important;
+
 }

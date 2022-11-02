@@ -46,7 +46,7 @@ d3.csv("data/iris.csv").then( function(data) {
 		.domain([0, d3.max(data, (d) => {
 			return parseInt(d.Petal_Length);
 		}) + 1])
-		.range([VIS_HEIGHT, 0])
+		.range([VIS_HEIGHT, 0]);
 	// Add y-axis on left graph
 	FRAME1.append("g")
 		.attr('transform', "translate(" + MARGINS.left +
